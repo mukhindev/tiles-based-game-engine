@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "declaration-colon-space-after": "always-single-line"
+  },
+  "ignoreFiles": [
+    ".cache/*",
+    "dist/*",
+    "lib/*"
+  ]
+}
