@@ -23,8 +23,6 @@ game.control.registerKey('ArrowLeft', CONTROL_KEY.LEFT);
 game.control.registerKey('ArrowRight', CONTROL_KEY.RIGHT);
 game.control.registerKey('Space', CONTROL_KEY.SPACE);
 
-setTimeout(() => {
-  game.init(() => console.log('Игра загружена'));
-}, 2000);
+game.init(() => console.log('Игра загружена'));
 
 app.append(canvas);

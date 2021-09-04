@@ -14,10 +14,11 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteId: 'brick',
     width: 32,
     height: 32,
+    hasCollision: true,
   },
   {
     id: 'g',
-    name: 'Кирпич',
+    name: 'Трава',
     spriteId: 'grass',
     width: 32,
     height: 32,

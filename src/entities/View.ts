@@ -2,7 +2,7 @@ import { GameState } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
 import World from './World';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../shared/constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, GAME_CONFIG } from '../shared/constants';
 
 export default class View {
   public canvas?: HTMLCanvasElement;
@@ -57,6 +57,21 @@ export default class View {
       player.width,
       player.height,
     );
+
+    if (GAME_CONFIG.IS_DEBUG_DRAW) {
+      this.renderDebugPlayerHitBox(player);
+    }
+  }
+
+  renderDebugPlayerHitBox(player: Player): void {
+    if (this.ctx) {
+      const { top, right, bottom, left } = player.hitBox;
+
+      this.ctx.beginPath();
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = 'yellow';
+      this.ctx.strokeRect(left, top, right - left, bottom - top);
+    }
   }
 
   update(gameState: GameState): void {

@@ -97,6 +97,16 @@ export default class Player {
     return [px, py];
   }
 
+  setHitBox({ top, right, bottom, left }: Partial<HitBox>): void {
+    this.hitBox = {
+      ...this.hitBox,
+      top: top || this.hitBox.top,
+      right: right || this.hitBox.right,
+      bottom: bottom || this.hitBox.bottom,
+      left: left || this.hitBox.left,
+    };
+  }
+
   update({ control, world }: GameState) {
     const { left, right, space } = control.keys;
 
@@ -128,7 +138,7 @@ export default class Player {
     this.vx *= friction;
     this.vy += gravity;
 
-    // Потеря скорости
+    // Перемещение
     this.x += this.vx;
     this.y += this.vy;
 

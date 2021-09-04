@@ -5,8 +5,6 @@ import World from './World';
 import { GameObjectRegisterOptions, GameState, LevelRegisterOptions, SpriteRegisterOptions } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
-import MusicSequencer from './MusicSequencer';
-import Synth from './Synth';
 
 export default class Game {
   public registeredSprites: SpriteRegisterOptions[];
@@ -18,8 +16,6 @@ export default class Game {
   public control: Control;
   public player: Player;
   public view: View;
-
-  public musicSequencer: MusicSequencer;
 
   public isLoaded: boolean;
   private requestAnimationId: number;
@@ -37,35 +33,6 @@ export default class Game {
     this.world = new World();
     this.player = new Player();
     this.view = new View();
-
-    this.musicSequencer = new MusicSequencer({
-      tracks: [
-        {
-          synth: new Synth({ oscillatorType: 'sawtooth' }),
-          pattern: [
-            'C3',
-            0,
-            'C2',
-            'C2',
-
-            0,
-            'C2',
-            0,
-            0,
-
-            'C3',
-            0,
-            'F2',
-            'F2',
-
-            0,
-            'F2',
-            0,
-            0,
-          ],
-        },
-      ],
-    });
 
     this.isLoaded = false;
     this.requestAnimationId = 0;
@@ -163,8 +130,6 @@ export default class Game {
     this.player.init(this.gameState);
     this.start();
 
-    this.musicSequencer.init();
-
     if (callback) {
       callback();
     }
@@ -193,8 +158,6 @@ export default class Game {
     this.world.update(this.gameState);
     this.player.update(this.gameState);
     this.view.update(this.gameState);
-
-    this.musicSequencer.update();
 
     this.requestAnimationId = window.requestAnimationFrame(this.loop);
   }

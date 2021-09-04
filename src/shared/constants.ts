@@ -11,8 +11,17 @@ export const CONTROL_KEY = {
   R: 'r',
 } as const;
 
+export const HIT_BOX_KEY = {
+  TOP: 'top',
+  LEFT: 'left',
+  RIGHT: 'right',
+  BOTTOM: 'bottom',
+} as const;
+
 // Настройки баланса игры
 export const GAME_CONFIG = {
+  // Рисовать отладочную графику
+  IS_DEBUG_DRAW: true,
   // Гравитация
   GRAVITY: 0.2,
   // Сопротивление
