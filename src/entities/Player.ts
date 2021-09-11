@@ -29,8 +29,9 @@ export default class Player {
   public vx: VX;
   public vy: VY;
   public sprite?: Sprite;
-  public spriteWidth?: Width;
-  public spriteHeight?: Height;
+  public spriteFrame: number;
+  public spriteWidth: Width;
+  public spriteHeight: Height;
   public hitBox: HitBox;
   public default: {
     x: X;
@@ -73,9 +74,14 @@ export default class Player {
       speed: this.speed,
       jumpPower: this.jumpPower,
     };
+
+    this.spriteWidth = 0;
+    this.spriteHeight = 0;
+    this.spriteFrame = 0;
   }
 
   restoreDefault() {
+    this.deactivateHitBoxForNextFrame();
     Object.entries(this.default)
       .forEach(([key, value]) => {
         // @ts-ignore
@@ -92,11 +98,41 @@ export default class Player {
     this.default.y = y;
   }
 
+  setSpriteFrame(frame: number): void {
+    this.spriteFrame = frame;
+  }
+
   get position(): Position {
     const px = Math.round(this.x / this.width);
     const py = Math.round(this.y / this.height);
 
     return [px, py];
+  }
+
+  setX(x: X): void {
+    this.deactivateHitBoxForNextFrame();
+    this.x = x;
+  }
+
+  setY(y: Y): void {
+    this.deactivateHitBoxForNextFrame();
+    this.y = y;
+  }
+
+  setVelocityX(vx: VX): void {
+    this.vx = vx;
+  }
+
+  setVelocityY(vy: VY): void {
+    this.vy = vy;
+  }
+
+  addVelocityX(vx: VX): void {
+    this.vx += vx;
+  }
+
+  addVelocityY(vy: VY): void {
+    this.vy += vy;
   }
 
   setHitBox({ top, right, bottom, left }: Partial<HitBox>): void {
@@ -106,6 +142,15 @@ export default class Player {
       right: right || this.hitBox.right,
       bottom: bottom || this.hitBox.bottom,
       left: left || this.hitBox.left,
+    };
+  }
+
+  deactivateHitBoxForNextFrame() {
+    this.hitBox = {
+      top: 0,
+      right: CANVAS_WIDTH,
+      bottom: CANVAS_HEIGHT,
+      left: 0,
     };
   }
 
@@ -145,22 +190,35 @@ export default class Player {
     this.y += this.vy;
 
     // Поиск коллизии слева и справа
-    if (this.x >= this.hitBox.right - this.width) {
+    const isLeftCollision = this.x >= this.hitBox.right - this.width;
+    const isRightCollision = this.x <= this.hitBox.left;
+    const isBottomCollision = this.y >= this.hitBox.bottom - this.height;
+    const isTopCollision = this.y <= this.hitBox.top;
+
+    if (isLeftCollision) {
       this.x = this.hitBox.right - this.width;
       this.vx = 0;
-    } else if (this.x <= this.hitBox.left) {
+    } else if (isRightCollision) {
       this.x = this.hitBox.left;
       this.vx = 0;
     }
 
-    // Поиск коллизии сверху и снизу
-    if (this.y >= this.hitBox.bottom - this.height) {
+    if (isBottomCollision) {
       this.y = this.hitBox.bottom - this.height;
       this.isJumping = false;
       this.vy = 0;
-    } else if (this.y <= this.hitBox.top) {
+    } else if (isTopCollision) {
       this.y = this.hitBox.top;
       this.vy = 0;
+    }
+
+    // Спрайт при движении
+    if (this.vx > 0.2) {
+      this.setSpriteFrame(1);
+    } else if (this.vx < -0.2) {
+      this.setSpriteFrame(2);
+    } else {
+      this.setSpriteFrame(0);
     }
   }
 }

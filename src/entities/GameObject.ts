@@ -1,5 +1,5 @@
 import Sprite from './Sprite';
-import { Height, Width, X, Y } from '../types';
+import { GameObjectCallbackParams, Height, Width, X, Y } from '../types';
 
 export type GameObjectConstructorOptions = {
   id: number | string;
@@ -12,6 +12,9 @@ export type GameObjectConstructorOptions = {
   spriteHeight?: Height;
   hasCollision?: boolean;
   z?: number;
+  onOver?: (params: GameObjectCallbackParams) => void;
+  onOut?: (params: GameObjectCallbackParams) => void;
+  onAbove?: (params: GameObjectCallbackParams) => void;
 };
 
 export default class GameObject {
@@ -21,21 +24,52 @@ export default class GameObject {
   public width: Width;
   public height: Height;
   public sprite: Sprite;
+  public spriteFrame: number;
   public spriteWidth: Width;
   public spriteHeight: Height;
   public hasCollision: boolean;
   public z: number;
+  public onOver?: (params: GameObjectCallbackParams) => void;
+  public onOut?: (params: GameObjectCallbackParams) => void;
+  public onAbove?: (params: GameObjectCallbackParams) => void;
 
   constructor(options: GameObjectConstructorOptions) {
     this.id = options.id;
-    this.x = 0;
-    this.y = 0;
+    this.x = options.x || 0;
+    this.y = options.y || 0;
     this.width = options.width || 0;
     this.height = options.height || 0;
     this.sprite = options.sprite;
+    this.spriteFrame = 0;
     this.spriteWidth = options.spriteWidth || options.width;
     this.spriteHeight = options.spriteHeight || options.height;
     this.hasCollision = options.hasCollision ?? false;
     this.z = options.z ?? 0;
+    this.onOver = options.onOver;
+    this.onOut = options.onOut;
+    this.onAbove = options.onAbove;
+  }
+
+  resetOnOverCallback(): void {
+    this.onOver = undefined;
+  }
+
+  resetOnAboveCallback(): void {
+    this.onAbove = undefined;
+  }
+
+  deactivate(): void {
+    this.resetOnAboveCallback();
+    this.resetOnOverCallback();
+  }
+
+  setSpriteFrame(frame: number): void {
+    this.spriteFrame = frame;
+  }
+
+  hideAndDeactivate(): void {
+    // "Прозрачный" спрайт
+    // TODO: Переделать исчезновение
+    this.deactivate();
   }
 }

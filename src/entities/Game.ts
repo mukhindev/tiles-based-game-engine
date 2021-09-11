@@ -6,6 +6,7 @@ import { GameObjectRegisterOptions, GameState, LevelRegisterOptions, SpriteRegis
 import GameObject from './GameObject';
 import Player from './Player';
 import { SPRITE_ID } from '../sprites';
+import { SPRITE_HEIGHT, SPRITE_WIDTH } from '../shared/constants';
 
 export default class Game {
   public registeredSprites: SpriteRegisterOptions[];
@@ -95,8 +96,8 @@ export default class Game {
     this.world.setStartPosition(currentRegisterLevel.startPosition);
 
     // Создание игровых объектов
-    const levelObjects = currentRegisterLevel.map.map((row) => {
-      return row.map((objectId) => {
+    const levelObjects = currentRegisterLevel.map.map((row, rowIndex) => {
+      return row.map((objectId, colIndex) => {
         if (!this.gameObjectConstructors[objectId]) {
           throw Error(`Ошибка создания уровня. Игровой блок "${objectId}" не зарегистрирован`);
         }
@@ -110,6 +111,8 @@ export default class Game {
         return new GameObject({
           ...this.gameObjectConstructors[objectId],
           sprite: this.sprites[spriteId],
+          x: colIndex * SPRITE_WIDTH,
+          y: rowIndex * SPRITE_HEIGHT,
         });
       });
     });

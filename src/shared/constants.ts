@@ -28,7 +28,7 @@ export const DEBUG_DRAW_COLOR = {
 // Настройки баланса игры
 export const GAME_CONFIG = {
   // Рисовать отладочную графику
-  IS_DEBUG_DRAW: true,
+  IS_DEBUG_DRAW: false,
   // Гравитация
   GRAVITY: 0.2,
   // Сопротивление
@@ -36,5 +36,5 @@ export const GAME_CONFIG = {
   // Скорость персонажа
   PLAYER_SPEED: 2,
   // Мощность прыжка
-  PLAYER_JUMP_POWER: 3,
+  PLAYER_JUMP_POWER: 2.5,
 } as const;

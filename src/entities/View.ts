@@ -31,7 +31,7 @@ export default class View {
       row.forEach((object, colIndex) => {
         this.ctx?.drawImage(
           object.sprite.image,
-          0,
+          object.spriteFrame * object.spriteWidth,
           0,
           object.spriteWidth,
           object.spriteHeight,
@@ -48,7 +48,7 @@ export default class View {
     this.ctx?.drawImage(
       // @ts-ignore
       player.sprite.image,
-      0,
+      player.spriteFrame * player.spriteWidth,
       0,
       player.spriteWidth || player.width,
       player.spriteHeight || player.height,

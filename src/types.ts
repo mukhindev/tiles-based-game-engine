@@ -4,6 +4,7 @@ type Control = import('./entities/Control').default;
 type World = import('./entities/World').default;
 type View = import('./entities/View').default;
 type Player = import('./entities/Player').default;
+type GameObject = import('./entities/GameObject').default;
 
 // Координата по горизонтали
 export type X = number;
@@ -60,17 +61,6 @@ export type ControlKeysState = Record<string, boolean>;
 
 export type SpriteRegisterOptions = SpriteConstructorOptions;
 
-export type GameObjectRegisterOptions = {
-  id: number | string;
-  spriteId: number | string;
-  spriteWidth?: number,
-  spriteHeight?: number,
-  width: Width;
-  height: Height;
-  hasCollision?: boolean;
-  z?: number;
-};
-
 export type LevelMap = (number | string)[][];
 
 export type LevelRegisterOptions = {
@@ -86,4 +76,22 @@ export type GameState = {
   player: Player;
   view: View;
   isLoaded: boolean;
+};
+
+export type GameObjectCallbackParams = GameState & {
+  target: GameObject,
+};
+
+export type GameObjectRegisterOptions = {
+  id: number | string;
+  spriteId: number | string;
+  spriteWidth?: number,
+  spriteHeight?: number,
+  width: Width;
+  height: Height;
+  hasCollision?: boolean;
+  z?: number;
+  onOver?: (params: GameObjectCallbackParams) => void;
+  onOut?: (params: GameObjectCallbackParams) => void;
+  onAbove?: (params: GameObjectCallbackParams) => void;
 };
