@@ -29,6 +29,8 @@ export default class Player {
   public vx: VX;
   public vy: VY;
   public sprite?: Sprite;
+  public spriteWidth?: Width;
+  public spriteHeight?: Height;
   public hitBox: HitBox;
   public default: {
     x: X;
@@ -142,7 +144,7 @@ export default class Player {
     this.x += this.vx;
     this.y += this.vy;
 
-    // Коллизия слева и справа
+    // Поиск коллизии слева и справа
     if (this.x >= this.hitBox.right - this.width) {
       this.x = this.hitBox.right - this.width;
       this.vx = 0;
@@ -151,7 +153,7 @@ export default class Player {
       this.vx = 0;
     }
 
-    // Коллизия сверху и снизу
+    // Поиск коллизии сверху и снизу
     if (this.y >= this.hitBox.bottom - this.height) {
       this.y = this.hitBox.bottom - this.height;
       this.isJumping = false;

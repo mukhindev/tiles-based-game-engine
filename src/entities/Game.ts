@@ -5,6 +5,7 @@ import World from './World';
 import { GameObjectRegisterOptions, GameState, LevelRegisterOptions, SpriteRegisterOptions } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
+import { SPRITE_ID } from '../sprites';
 
 export default class Game {
   public registeredSprites: SpriteRegisterOptions[];
@@ -118,7 +119,9 @@ export default class Game {
   }
 
   private preparePlayer() {
-    this.player.sprite = this.sprites['player'];
+    this.player.sprite = this.sprites[SPRITE_ID.PLAYER];
+    this.player.spriteWidth = 64;
+    this.player.spriteHeight = 64;
   }
 
   async init(callback?: () => void): Promise<void> {

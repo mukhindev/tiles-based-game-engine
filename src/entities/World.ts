@@ -28,15 +28,7 @@ export default class World {
     this.levelObjects = [];
   }
 
-  /**
-   * Проверка коллизии
-   * @param player Экземпляр плеера
-   * @param key Ключ направления hitbox
-   * @param px hitbox по x если в соответствующую сторону коллизия
-   * @param py hitbox по y если в соответствующую сторону коллизия
-   * @param opx hitbox по x если в соответствующую сторону нет коллизии
-   * @param opy hitbox по y если в соответствующую сторону нет коллизии
-   */
+  // Проверка коллизии. p* положение hitbox c коллизией, op* (offset position) без коллизии
   checkCollision = (player: Player, key: string, px: PX, py: PY, opx: PX, opy: PX): void => {
     if (this.levelObjects && this.levelObjects[px][py].hasCollision) {
       player.setHitBox({ [key]: opx * SPRITE_WIDTH });

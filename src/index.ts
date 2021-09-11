@@ -7,6 +7,8 @@ import { CONTROL_KEY } from './shared/constants';
 const app = document.querySelector('.app');
 const canvas = document.createElement('canvas');
 
+canvas.style.width = '100%';
+
 if (!app) {
   throw Error('Не найден элемент с классом .app');
 }

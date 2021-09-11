@@ -2,7 +2,7 @@ import { GameState } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
 import World from './World';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, GAME_CONFIG } from '../shared/constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, DEBUG_DRAW_COLOR, GAME_CONFIG, SPRITE_WIDTH } from '../shared/constants';
 
 export default class View {
   public canvas?: HTMLCanvasElement;
@@ -33,8 +33,8 @@ export default class View {
           object.sprite.image,
           0,
           0,
-          object.width,
-          object.height,
+          object.spriteWidth,
+          object.spriteHeight,
           colIndex * object.width,
           rowIndex * object.height,
           object.width,
@@ -50,8 +50,8 @@ export default class View {
       player.sprite.image,
       0,
       0,
-      player.width,
-      player.height,
+      player.spriteWidth || player.width,
+      player.spriteHeight || player.height,
       player.x,
       player.y,
       player.width,
@@ -69,8 +69,20 @@ export default class View {
 
       this.ctx.beginPath();
       this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = 'yellow';
+      this.ctx.strokeStyle = DEBUG_DRAW_COLOR.HIT_BOX;
       this.ctx.strokeRect(left, top, right - left, bottom - top);
+
+      const [px, py] = player.position;
+
+      this.ctx.beginPath();
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = DEBUG_DRAW_COLOR.ON_ABOVE_TILE;
+      this.ctx.strokeRect(px * SPRITE_WIDTH, (py + 1) * SPRITE_WIDTH, player.width, player.height);
+
+      this.ctx.beginPath();
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = DEBUG_DRAW_COLOR.ON_OVER_TILE;
+      this.ctx.strokeRect(px * SPRITE_WIDTH, py * SPRITE_WIDTH, player.width, player.height);
     }
   }
 

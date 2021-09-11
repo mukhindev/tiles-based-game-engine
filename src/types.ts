@@ -1,4 +1,3 @@
-// Координата на горизонтали
 import { SpriteConstructorOptions } from './entities/Sprite';
 
 type Control = import('./entities/Control').default;
@@ -42,7 +41,7 @@ export type PY = number;
 // 2D координаты позиции [PX, PY] (по плитках)
 export type Position = [PX, PY];
 
-//
+// Бокс ограничивающий перемещение
 export type HitBox = {
   top: number;
   left: number;
@@ -63,8 +62,9 @@ export type SpriteRegisterOptions = SpriteConstructorOptions;
 
 export type GameObjectRegisterOptions = {
   id: number | string;
-  name: string;
   spriteId: number | string;
+  spriteWidth?: number,
+  spriteHeight?: number,
   width: Width;
   height: Height;
   hasCollision?: boolean;

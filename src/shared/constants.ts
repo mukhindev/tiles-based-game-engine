@@ -18,6 +18,13 @@ export const HIT_BOX_KEY = {
   BOTTOM: 'bottom',
 } as const;
 
+export const DEBUG_DRAW_COLOR = {
+  HIT_BOX: '#ff206e',
+  ON_ABOVE_TILE: '#fbff12',
+  ON_OVER_TILE: '#41ead4',
+  Y: '#ffa5ab',
+} as const;
+
 // Настройки баланса игры
 export const GAME_CONFIG = {
   // Рисовать отладочную графику
