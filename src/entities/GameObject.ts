@@ -54,12 +54,17 @@ export default class GameObject {
     this.onOver = undefined;
   }
 
+  resetOnOutCallback(): void {
+    this.onOut = undefined;
+  }
+
   resetOnAboveCallback(): void {
     this.onAbove = undefined;
   }
 
   deactivate(): void {
     this.resetOnAboveCallback();
+    this.resetOnOutCallback();
     this.resetOnOverCallback();
   }
 
@@ -69,7 +74,7 @@ export default class GameObject {
 
   hideAndDeactivate(): void {
     // "Прозрачный" спрайт
-    // TODO: Переделать исчезновение
+    this.setSpriteFrame(-1);
     this.deactivate();
   }
 }

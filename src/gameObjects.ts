@@ -1,5 +1,6 @@
 import { GameObjectRegisterOptions } from './types';
 import { SPRITE_ID } from './sprites';
+import { makeAnimation } from './shared/utils';
 
 export const GAME_OBJECT_ID = {
   AIR: 0,
@@ -53,10 +54,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    hasCollision: true,
-    onAbove: ({ player }) => {
+    onOver: ({ target, player }) => {
       player.vy = -10;
       // this.soundController.play(SOUND.TRAMPOLINE);
+      makeAnimation((frame) => target.setSpriteFrame(frame), [0, 1, 2, 1, 0], 1000 / 30);
     },
   },
   {

@@ -4,10 +4,21 @@ import { gameObjects } from './gameObjects';
 import { levels } from './levels';
 import { CONTROL_KEY } from './shared/constants';
 
+const body = document.body
 const app = document.querySelector('.app');
 const canvas = document.createElement('canvas');
 
-canvas.style.width = '100%';
+body.style.margin = '0';
+body.style.backgroundColor = '#000';
+body.style.display = 'flex';
+body.style.alignItems = 'center';
+body.style.justifyContent = 'center';
+body.style.height = '100vh';
+
+canvas.style.width = '95vw';
+canvas.style.maxHeight = '95vh';
+canvas.style.objectFit = 'contain';
+canvas.style.border = 'none';
 
 if (!app) {
   throw Error('Не найден элемент с классом .app');
