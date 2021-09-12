@@ -1,9 +1,11 @@
 import { LevelRegisterOptions } from './types';
+import { SOUND_ID } from './sounds';
 
 export const levels: LevelRegisterOptions[] = [
   {
     id: 0,
     startPosition: [590, 220],
+    music: SOUND_ID.MUSIC,
     map: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],

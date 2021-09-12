@@ -2,22 +2,33 @@ import Control from './Control';
 import View from './View';
 import Sprite from './Sprite';
 import World from './World';
-import { GameObjectRegisterOptions, GameState, LevelRegisterOptions, SpriteRegisterOptions } from '../types';
+import {
+  GameObjectRegisterOptions,
+  GameState,
+  LevelRegisterOptions,
+  SoundRegisterOptions,
+  SpriteRegisterOptions,
+} from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
 import { SPRITE_ID } from '../sprites';
 import { SPRITE_HEIGHT, SPRITE_WIDTH } from '../shared/constants';
+import SoundSample from './SoundSample';
+import SoundController from './SoundController';
 
 export default class Game {
   public registeredSprites: SpriteRegisterOptions[];
+  public registeredSounds: SoundRegisterOptions[];
   public registeredGameObjects: GameObjectRegisterOptions[];
   public registeredLevels: LevelRegisterOptions[];
   public sprites: Record<number | string, Sprite>;
+  public sounds: Record<number | string, any>;
   public gameObjectConstructors: Record<number | string, GameObjectRegisterOptions>;
   public world: World;
   public control: Control;
   public player: Player;
   public view: View;
+  public sound: SoundController | null;
 
   public isLoaded: boolean;
   private requestAnimationId: number;
@@ -25,16 +36,19 @@ export default class Game {
   constructor() {
     // Зарегистрированные в игре сущности
     this.registeredSprites = [];
+    this.registeredSounds = [];
     this.registeredGameObjects = [];
     this.registeredLevels = [];
 
     this.sprites = {};
+    this.sounds = {};
     this.gameObjectConstructors = {};
 
     this.control = new Control();
     this.world = new World();
     this.player = new Player();
     this.view = new View();
+    this.sound = null;
 
     this.isLoaded = false;
     this.requestAnimationId = 0;
@@ -47,16 +61,22 @@ export default class Game {
     this.registeredSprites = sprites;
   }
 
+  // Регистрация звуков в игре (см. index.ts)
+  public registerSounds(sounds: SoundRegisterOptions[]) {
+    this.registeredSounds = sounds;
+  }
+
   // Регистрация игровых объектов в игре (см. index.ts)
   public registerGameObjects(gameObjects: GameObjectRegisterOptions[]) {
     this.registeredGameObjects = gameObjects;
   }
 
-  // Регистрация спрайтов в игре (см. index.ts)
+  // Регистрация уровней в игре (см. index.ts)
   public registerLevels(levels: LevelRegisterOptions[]) {
     this.registeredLevels = levels;
   }
 
+  // Регистрация спрайтов
   private prepareSprite = (sprite: Sprite) => {
     if (this.sprites[sprite.id]) {
       throw Error('Идентификатор спрайтов должен быть уникальным');
@@ -65,7 +85,6 @@ export default class Game {
     this.sprites[sprite.id] = sprite;
   };
 
-  // Регистрация спрайтов
   private async prepareSprites() {
     const sprites = this.registeredSprites.map((options) => new Sprite(options));
     sprites.forEach(this.prepareSprite);
@@ -73,6 +92,25 @@ export default class Game {
     // Загрузка спрайтов асинхронна, ожидаем загрузку всех
     const loads = sprites.map((sprite) => sprite.load());
     await Promise.all(loads);
+    this.isLoaded = true;
+  }
+
+  // Регистрация звуков
+  private prepareSound = (sound: any) => {
+    if (this.sounds[sound.id]) {
+      throw Error('Идентификатор звуков должен быть уникальным');
+    }
+
+    this.sound?.add(sound);
+  };
+
+  private async prepareSounds() {
+    const sounds = this.registeredSounds.map((options) => new SoundSample(options));
+
+    // Загрузка звуков асинхронна, ожидаем загрузку всех
+    const loads = sounds.map((sound) => sound.load());
+    await Promise.all(loads);
+    sounds.forEach(this.prepareSound);
     this.isLoaded = true;
   }
 
@@ -91,6 +129,7 @@ export default class Game {
 
   private prepareLevel() {
     const currentRegisterLevel = this.registeredLevels[0];
+    this.sound?.play(currentRegisterLevel.music);
 
     // Установка в мир стартовой позиции игрока
     this.world.setStartPosition(currentRegisterLevel.startPosition);
@@ -127,9 +166,11 @@ export default class Game {
     this.player.spriteHeight = 64;
   }
 
-  async init(callback?: () => void): Promise<void> {
+  async init(callback?: (gameState: GameState) => void): Promise<void> {
     this.control.init();
     await this.prepareSprites();
+    this.sound = new SoundController();
+    await this.prepareSounds();
     this.prepareGameObjects();
     this.prepareLevel();
     this.preparePlayer();
@@ -137,7 +178,7 @@ export default class Game {
     this.start();
 
     if (callback) {
-      callback();
+      callback(this.gameState);
     }
   }
 
@@ -156,6 +197,7 @@ export default class Game {
       world: this.world,
       player: this.player,
       view: this.view,
+      sound: this.sound,
       isLoaded: this.isLoaded,
     };
   }

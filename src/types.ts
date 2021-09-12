@@ -1,10 +1,12 @@
 import { SpriteConstructorOptions } from './entities/Sprite';
+import { SoundSampleConstructorOptions } from './entities/SoundSample';
 
 type Control = import('./entities/Control').default;
 type World = import('./entities/World').default;
 type View = import('./entities/View').default;
 type Player = import('./entities/Player').default;
 type GameObject = import('./entities/GameObject').default;
+type SoundController = import('./entities/SoundController').default;
 
 // Координата по горизонтали
 export type X = number;
@@ -57,9 +59,12 @@ export type RegisteredKey = {
 };
 
 export type RegisteredKeys = Record<string, RegisteredKey>;
+
 export type ControlKeysState = Record<string, boolean>;
 
 export type SpriteRegisterOptions = SpriteConstructorOptions;
+
+export type SoundRegisterOptions = SoundSampleConstructorOptions;
 
 export type LevelMap = (number | string)[][];
 
@@ -67,6 +72,7 @@ export type LevelRegisterOptions = {
   id: number | string;
   startPosition: XYCoordinates;
   map: LevelMap;
+  music: string;
 };
 
 export type GameState = {
@@ -75,6 +81,7 @@ export type GameState = {
   world: World;
   player: Player;
   view: View;
+  sound: SoundController | null;
   isLoaded: boolean;
 };
 

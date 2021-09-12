@@ -1,6 +1,7 @@
 import { GameObjectRegisterOptions } from './types';
 import { SPRITE_ID } from './sprites';
 import { makeAnimation } from './shared/utils';
+import { SOUND_ID } from './sounds';
 
 export const GAME_OBJECT_ID = {
   AIR: 0,
@@ -54,9 +55,9 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ target, player }) => {
+    onOver: ({ target, player, sound }) => {
       player.vy = -10;
-      // this.soundController.play(SOUND.TRAMPOLINE);
+      sound.play(SOUND_ID.TRAMPOLINE);
       makeAnimation((frame) => target.setSpriteFrame(frame), [0, 1, 2, 1, 0], 1000 / 30);
     },
   },
@@ -92,18 +93,18 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ target }) => {
-      // if (this.gameState.isKeyAcquired) {
-      //   target.setSprite([32, 96]);
-      //   target.deactivate();
-      //   this.soundController.play(SOUND.DOOR);
-      //   this.stop();
-      //
-      //   setTimeout(() => {
-      //     this.setGameState(GAME_STATE_KEY.IS_LEVEL_COMPLETED, true);
-      //   }, 2000);
-      // }
-    },
+    // onOver: ({ target }) => {
+    //   if (this.gameState.isKeyAcquired) {
+    //     target.setSprite([32, 96]);
+    //     target.deactivate();
+    //     this.soundController.play(SOUND.DOOR);
+    //     this.stop();
+    //
+    //     setTimeout(() => {
+    //       this.setGameState(GAME_STATE_KEY.IS_LEVEL_COMPLETED, true);
+    //     }, 2000);
+    //   }
+    // },
   },
   {
     id: GAME_OBJECT_ID.SPIKES,
@@ -112,7 +113,7 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ player }) => {
+    onOver: ({ player, sound }) => {
       // this.setGameState(GAME_STATE_KEY.PLAYER_HEALTH, this.gameState.playerHealth - 1);
       player.setVelocityY(-2);
 
@@ -122,7 +123,7 @@ export const gameObjects: GameObjectRegisterOptions[] = [
         player.setVelocityX(10);
       }
 
-      // this.soundController.play(SOUND.SPIKES);
+      sound.play(SOUND_ID.SPIKES);
     },
   },
   {
@@ -132,7 +133,7 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ player, world }) => {
+    onOver: ({ player, world, sound }) => {
       const otherPortal = world.levelObjects
         .flat()
         .find((object) => object.id === GAME_OBJECT_ID.PORTAL_B);
@@ -140,8 +141,8 @@ export const gameObjects: GameObjectRegisterOptions[] = [
       if (otherPortal && otherPortal.x && otherPortal.y) {
         player.setX(otherPortal.x);
         player.setY(otherPortal.y);
+        sound.play(SOUND_ID.TELEPORT);
       }
-      // this.soundController.play(SOUND.TELEPORT);
     },
   },
   {

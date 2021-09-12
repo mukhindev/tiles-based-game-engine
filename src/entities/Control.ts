@@ -8,7 +8,7 @@ export default class Control {
   }
 
   handleKeyPressed = (evt: KeyboardEvent): void => {
-    // evt.preventDefault();
+    evt.preventDefault();
 
     if (this.registeredKeys[evt.code]) {
       this.registeredKeys[evt.code].state = true;
@@ -16,7 +16,7 @@ export default class Control {
   };
 
   handleKeyReleased = (evt: KeyboardEvent): void => {
-    // evt.preventDefault();
+    evt.preventDefault();
 
     if (this.registeredKeys[evt.code]) {
       this.registeredKeys[evt.code].state = false;

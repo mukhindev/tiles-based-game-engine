@@ -25,7 +25,7 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
+        test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf|mp3)$/,
         type: 'asset/resource',
       },
       {

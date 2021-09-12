@@ -2,7 +2,14 @@ import { GameState } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
 import World from './World';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, DEBUG_DRAW_COLOR, GAME_CONFIG, SPRITE_WIDTH } from '../shared/constants';
+import {
+  CANVAS_BACKGROUND,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  DEBUG_DRAW_COLOR,
+  GAME_CONFIG,
+  SPRITE_WIDTH,
+} from '../shared/constants';
 
 export default class View {
   public canvas?: HTMLCanvasElement;
@@ -21,7 +28,7 @@ export default class View {
   prepareCanvas(): void {
     if (this.canvas && this.ctx) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.fillStyle = '#000';
+      this.ctx.fillStyle = CANVAS_BACKGROUND;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }

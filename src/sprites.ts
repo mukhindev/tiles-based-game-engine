@@ -1,14 +1,14 @@
-import airSprite from './sprites/air.png';
-import playerSprite from './sprites/player.png';
-import brickSprite from './sprites/brick.png';
-import grassSprite from './sprites/grass.png';
-import trampolineSprite from './sprites/trampoline.png';
-import iceSprite from './sprites/ice.png';
-import keySprite from './sprites/key.png';
-import doorSprite from './sprites/door.png';
-import spikesSprite from './sprites/spikes.png';
-import portalASprite from './sprites/portal-a.png';
-import portalBSprite from './sprites/portal-b.png';
+import airSprite from './assets/sprites/air.png';
+import playerSprite from './assets/sprites/player.png';
+import brickSprite from './assets/sprites/brick.png';
+import grassSprite from './assets/sprites/grass.png';
+import trampolineSprite from './assets/sprites/trampoline.png';
+import iceSprite from './assets/sprites/ice.png';
+import keySprite from './assets/sprites/key.png';
+import doorSprite from './assets/sprites/door.png';
+import spikesSprite from './assets/sprites/spikes.png';
+import portalASprite from './assets/sprites/portal-a.png';
+import portalBSprite from './assets/sprites/portal-b.png';
 import { SpriteRegisterOptions } from './types';
 
 export const SPRITE_ID = {
