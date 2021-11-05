@@ -1,4 +1,4 @@
-import { GAME_CONFIG } from './constants';
+import { GAME_CONFIG } from '../shared/constants';
 
 function makeAnimation(
   target: (frame: number) => void,

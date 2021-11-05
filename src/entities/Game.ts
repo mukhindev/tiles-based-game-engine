@@ -42,6 +42,7 @@ export default class Game {
   private requestAnimationId: number;
   public gameState: GameState;
   public onStateUpdate: (gameSession: GameState) => void;
+  public registerCanvas: (canvas: HTMLCanvasElement) => void;
 
   private _gameStartTimestamp!: number;
 
@@ -71,6 +72,8 @@ export default class Game {
     this.player = new Player();
     this.view = new View();
     this.sound = new SoundController();
+
+    this.registerCanvas = this.view.registerCanvas;
 
     this.isLoaded = false;
     this.requestAnimationId = 0;
@@ -102,7 +105,7 @@ export default class Game {
 
   private prepareSprite = (sprite: Sprite) => {
     if (this.sprites[sprite.id]) {
-      throw Error(text.game.errors.uniqueSprite);
+      throw Error(text.errors.uniqueSprite);
     }
 
     this.sprites[sprite.id] = sprite;
@@ -119,7 +122,7 @@ export default class Game {
 
   private prepareSound = (sound: SoundSample): void => {
     if (this.sounds[sound.id]) {
-      throw Error(text.game.errors.loadingSound);
+      throw Error(text.errors.loadingSound);
     }
 
     this.sound?.add(sound);
@@ -135,7 +138,7 @@ export default class Game {
 
   private prepareGameObject = (gameObject: GameObjectRegisterOptions) => {
     if (this.gameObjectOptions[gameObject.id]) {
-      throw Error(text.game.errors.loadingGameObject);
+      throw Error(text.errors.loadingGameObject);
     }
 
     this.gameObjectOptions[gameObject.id] = gameObject;
@@ -158,13 +161,13 @@ export default class Game {
     const levelObjects = currentRegisterLevel.map.map((row, rowIndex) => {
       return row.map((objectId, colIndex) => {
         if (!this.gameObjectOptions[objectId]) {
-          throw Error(`${text.game.errors.unregisteredGameObject} "${objectId}"`);
+          throw Error(`${text.errors.unregisteredGameObject} "${objectId}"`);
         }
 
         const { spriteId } = this.gameObjectOptions[objectId];
 
         if (!this.sprites[spriteId]) {
-          throw Error(`${text.game.errors.unregisteredSprite} "${spriteId}"`);
+          throw Error(`${text.errors.unregisteredSprite} "${spriteId}"`);
         }
 
         return new GameObject({

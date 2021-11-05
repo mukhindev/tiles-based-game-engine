@@ -17,6 +17,10 @@ export default class View {
   public canvas?: HTMLCanvasElement;
   public ctx?: CanvasRenderingContext2D | null;
 
+  constructor() {
+    this.registerCanvas = this.registerCanvas.bind(this);
+  }
+
   registerCanvas(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');

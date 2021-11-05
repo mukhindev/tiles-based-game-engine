@@ -20,7 +20,7 @@ export default class Sprite {
     return new Promise((resolve, reject) => {
       this.image.src = this.src;
       this.image.onload = () => resolve(this);
-      this.image.onerror = () => reject(new Error(text.game.errors.loadingSprite));
+      this.image.onerror = () => reject(new Error(text.errors.loadingSprite));
     });
   }
 }

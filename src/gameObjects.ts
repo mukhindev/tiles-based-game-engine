@@ -1,5 +1,5 @@
 import { GAME_SESSION_KEY } from './shared/constants';
-import makeAnimation from './shared/makeAnimation';
+import makeAnimation from './utils/makeAnimation';
 import { SOUND_ID } from './sounds';
 import { SPRITE_ID } from './sprites';
 import { GameObjectRegisterOptions } from './types';

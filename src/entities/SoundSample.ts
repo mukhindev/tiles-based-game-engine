@@ -27,7 +27,7 @@ export default class SoundSample {
 
       return this;
     } catch (error) {
-      throw new Error(text.game.errors.loadingSound);
+      throw new Error(text.errors.loadingSound);
     }
   }
 }

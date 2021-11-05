@@ -75,7 +75,7 @@ export default class Control {
         Object.entries(this.registeredKeys).forEach(([keyCode, { gamepadButton, description }]) => {
           if (gamepadButton === null && !this.assignableButton) {
             // eslint-disable-next-line no-alert
-            alert(`${text.game.gamepadConfiguration} ${description}`);
+            alert(`${text.gamepadConfiguration} ${description}`);
             this.assignableButton = keyCode;
           }
         });
