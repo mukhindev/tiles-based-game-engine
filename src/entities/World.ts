@@ -1,7 +1,7 @@
-import { GameState, Position, PX, PY, XYCoordinates } from '../types';
 import GameObject from './GameObject';
-import { GAME_CONFIG, HIT_BOX_KEY, SPRITE_HEIGHT, SPRITE_WIDTH } from '../shared/constants';
 import Player from './Player';
+import { GAME_CONFIG, HIT_BOX_KEY, SPRITE_HEIGHT, SPRITE_WIDTH } from '../shared/constants';
+import { GameEntities, Position, PX, PY, XYCoordinates } from '../types';
 
 export default class World {
   public levelObjects: GameObject[][];
@@ -22,7 +22,7 @@ export default class World {
     this.gravity = GAME_CONFIG.GRAVITY;
   }
 
-  setStartPosition(xy: XYCoordinates) {
+  setStartPosition(xy: XYCoordinates): void {
     this.startPosition = xy;
   }
 
@@ -30,8 +30,17 @@ export default class World {
     this.levelObjects = levelObjects;
   }
 
+  setFriction(value: number): void {
+    this.friction = value;
+  }
+
+  setGravity(value: number): void {
+    this.gravity = value;
+  }
+
   destroy(): void {
     this.levelObjects = [];
+    this.lastOveredGameObject = null;
   }
 
   // Проверка коллизии. p* положение hitbox c коллизией, op* (offset position) без коллизии
@@ -49,7 +58,7 @@ export default class World {
   }
 
   // Обновление на смену позиции (по тайлам)
-  onPositionUpdate(gameState: GameState, px: PX, py: PY): void {
+  onPositionUpdate(gameEntities: GameEntities, px: PX, py: PY): void {
     const isOver = this.lastActionPosition[0] === px && this.lastActionPosition[1] === py;
 
     const overedGameObject = this.levelObjects[py][px];
@@ -59,18 +68,18 @@ export default class World {
 
     // Колбэк при пересечении объекта
     if (overedGameObject.onOver) {
-      overedGameObject.onOver({ target: overedGameObject, ...gameState });
+      overedGameObject.onOver({ target: overedGameObject, ...gameEntities });
       this.lastActionPosition = [px, py];
     }
 
     // Колбэк при перемещении по объекту
     if (bottomGameObject.onAbove && !isOver) {
-      bottomGameObject.onAbove({ target: bottomGameObject, ...gameState });
+      bottomGameObject.onAbove({ target: bottomGameObject, ...gameEntities });
     }
 
     // Колбэк при покидании объекта
     if (this.lastOveredGameObject?.onOut) {
-      this.lastOveredGameObject.onOut({ target: this.lastOveredGameObject, ...gameState });
+      this.lastOveredGameObject.onOut({ target: this.lastOveredGameObject, ...gameEntities });
     }
 
     this.lastOveredGameObject = overedGameObject;
@@ -79,13 +88,15 @@ export default class World {
   checkPositionUpdate = (px: PX, py: PY): boolean => {
     if (this.lastPlayerPosition[0] !== px || this.lastPlayerPosition[1] !== py) {
       this.lastPlayerPosition = [px, py];
+
       return true;
     }
+
     return false;
   };
 
-  update(gameState: GameState): void {
-    const { player } = gameState;
+  update(gameEntities: GameEntities): void {
+    const { player } = gameEntities;
     const [px, py] = player.position;
 
     this.checkCollision(player, HIT_BOX_KEY.TOP, py - 1, px, py, py - 1);
@@ -96,7 +107,7 @@ export default class World {
     const isUpdated = this.checkPositionUpdate(px, py);
 
     if (isUpdated) {
-      this.onPositionUpdate(gameState, px, py);
+      this.onPositionUpdate(gameEntities, px, py);
     }
   }
 }

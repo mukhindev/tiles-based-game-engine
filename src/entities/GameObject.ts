@@ -72,6 +72,10 @@ export default class GameObject {
     this.spriteFrame = frame;
   }
 
+  setCollision(value?: boolean): void {
+    this.hasCollision = value ?? true;
+  }
+
   hideAndDeactivate(): void {
     // "Прозрачный" спрайт
     this.setSpriteFrame(-1);

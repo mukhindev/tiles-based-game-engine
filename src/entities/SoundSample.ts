@@ -1,3 +1,5 @@
+import text from '../shared/text';
+
 export type SoundSampleConstructorOptions = {
   id: number | string;
   src: string;
@@ -20,10 +22,12 @@ export default class SoundSample {
   async load(): Promise<SoundSample> {
     try {
       const response = await fetch(this.src);
+
       this.buffer = await response.arrayBuffer();
+
       return this;
     } catch (error) {
-      throw new Error('Не удалось получить звук');
+      throw new Error(text.game.errors.loadingSound);
     }
   }
 }

@@ -1,3 +1,5 @@
+import text from '../shared/text';
+
 export type SpriteConstructorOptions = {
   id: number | string;
   src: string;
@@ -18,7 +20,7 @@ export default class Sprite {
     return new Promise((resolve, reject) => {
       this.image.src = this.src;
       this.image.onload = () => resolve(this);
-      this.image.onerror = () => reject(new Error('Не удалось получить спрайт'));
+      this.image.onerror = () => reject(new Error(text.game.errors.loadingSprite));
     });
   }
 }

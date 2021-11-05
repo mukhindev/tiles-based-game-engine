@@ -1,4 +1,5 @@
 import Sprite from './Sprite';
+
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -6,16 +7,17 @@ import {
   SPRITE_HEIGHT,
   SPRITE_WIDTH,
 } from '../shared/constants';
+
 import {
-  GameState,
-  Width,
+  GameEntities,
   Height,
-  X,
-  Y,
-  VX,
-  VY,
   HitBox,
   Position,
+  VX,
+  VY,
+  Width,
+  X,
+  Y,
 } from '../types';
 
 export default class Player {
@@ -36,6 +38,8 @@ export default class Player {
   public default: {
     x: X;
     y: Y;
+    vx: VX;
+    vy: VY;
     width: Width;
     height: Height;
     speed: number;
@@ -69,6 +73,8 @@ export default class Player {
     this.default = {
       x: this.x,
       y: this.y,
+      vx: this.vx,
+      vy: this.vy,
       width: this.width,
       height: this.height,
       speed: this.speed,
@@ -80,16 +86,20 @@ export default class Player {
     this.spriteFrame = 0;
   }
 
-  restoreDefault() {
+  restoreDefault(): void {
     this.deactivateHitBoxForNextFrame();
-    Object.entries(this.default)
-      .forEach(([key, value]) => {
-        // @ts-ignore
-        this[key] = value;
-      });
+
+    this.x = this.default.x;
+    this.y = this.default.y;
+    this.vx = this.default.vx;
+    this.vy = this.default.vy;
+    this.width = this.default.width;
+    this.height = this.default.height;
+    this.speed = this.default.speed;
+    this.jumpPower = this.default.jumpPower;
   }
 
-  init({ world }: GameState) {
+  init({ world }: GameEntities): void {
     const { startPosition: [x, y] } = world;
 
     this.x = x;
@@ -135,7 +145,9 @@ export default class Player {
     this.vy += vy;
   }
 
-  setHitBox({ top, right, bottom, left }: Partial<HitBox>): void {
+  setHitBox(sides: Partial<HitBox>): void {
+    const { top, right, bottom, left } = sides;
+
     this.hitBox = {
       ...this.hitBox,
       top: top || this.hitBox.top,
@@ -145,7 +157,7 @@ export default class Player {
     };
   }
 
-  deactivateHitBoxForNextFrame() {
+  deactivateHitBoxForNextFrame(): void {
     this.hitBox = {
       top: 0,
       right: CANVAS_WIDTH,
@@ -154,7 +166,7 @@ export default class Player {
     };
   }
 
-  update({ control, world }: GameState) {
+  update({ control, world }: GameEntities): void {
     const { left, right, space } = control.keys;
 
     // Движение влево
@@ -173,7 +185,7 @@ export default class Player {
 
     // Прыжок
     if (space) {
-      if (!this.isJumping) {
+      if (!this.isJumping && this.vy === 0) {
         this.isJumping = true;
         this.vy = -this.speed * this.jumpPower;
       }
@@ -213,9 +225,9 @@ export default class Player {
     }
 
     // Спрайт при движении
-    if (this.vx > 0.2) {
+    if (this.vx > GAME_CONFIG.PLAYER_MOVEMENT_SPITE_SENSITIVITY) {
       this.setSpriteFrame(1);
-    } else if (this.vx < -0.2) {
+    } else if (this.vx < -GAME_CONFIG.PLAYER_MOVEMENT_SPITE_SENSITIVITY) {
       this.setSpriteFrame(2);
     } else {
       this.setSpriteFrame(0);

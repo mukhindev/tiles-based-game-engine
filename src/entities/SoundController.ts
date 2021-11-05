@@ -3,31 +3,43 @@ import SoundSample from './SoundSample';
 type DecodedSoundSample = {
   buffer: Promise<AudioBuffer>;
   isLooped: boolean;
+  lastNode: AudioBufferSourceNode | null;
 };
 
 export default class SoundController {
-  ctx: AudioContext;
+  ctx: AudioContext | null;
   decodedSamples: Record<number | string, DecodedSoundSample>;
 
   constructor() {
-    this.ctx = new AudioContext();
+    this.ctx = null;
     this.decodedSamples = {};
   }
 
+  init(): void {
+    this.ctx = new AudioContext();
+  }
+
   async add(soundSample: SoundSample): Promise<void> {
+    if (!this.ctx) {
+      return;
+    }
+
     this.decodedSamples[soundSample.id] = {
       buffer: this.ctx.decodeAudioData(soundSample.buffer),
       isLooped: soundSample.isLooped,
+      lastNode: null,
     };
   }
 
   async play(id: string): Promise<void> {
-    if (!this.decodedSamples[id]) {
+    if (!this.decodedSamples[id] || !this.ctx) {
       return;
     }
 
     const sample = this.decodedSamples[id];
     const sourceNode = this.ctx.createBufferSource();
+
+    sample.lastNode = sourceNode;
 
     sourceNode.buffer = await sample.buffer;
     sourceNode.loop = sample.isLooped || false;
@@ -35,10 +47,22 @@ export default class SoundController {
     sourceNode.start();
   }
 
+  async stop(id: string): Promise<void> {
+    if (!this.decodedSamples[id]) {
+      return;
+    }
+
+    const sample = this.decodedSamples[id];
+
+    sample.lastNode?.stop();
+  }
+
   destroy(): void {
+    if (!this.ctx) {
+      return;
+    }
+
     this.decodedSamples = {};
-    setTimeout(() => {
-      this.ctx.close();
-    }, 1000);
+    this.ctx.close();
   }
 }

@@ -1,5 +1,5 @@
-import { SpriteConstructorOptions } from './entities/Sprite';
 import { SoundSampleConstructorOptions } from './entities/SoundSample';
+import { SpriteConstructorOptions } from './entities/Sprite';
 
 type Control = import('./entities/Control').default;
 type World = import('./entities/World').default;
@@ -55,7 +55,9 @@ export type HitBox = {
 //
 export type RegisteredKey = {
   key: string;
+  gamepadButton: number | null;
   state: boolean;
+  description: string;
 };
 
 export type RegisteredKeys = Record<string, RegisteredKey>;
@@ -75,25 +77,40 @@ export type LevelRegisterOptions = {
   music: string;
 };
 
+// Состояние игровой сессии
 export type GameState = {
+  isKeyAcquired: boolean;
+  isDoorUnlocked: boolean;
+  isGameCompleted: boolean;
+  playerHealth: number;
+  time: number;
+  totalTime: number;
+  level: number;
+  points: number;
+};
+
+export type GameEntities = {
   gameObjects: Record<number | string, GameObjectRegisterOptions>;
   control: Control;
   world: World;
   player: Player;
   view: View;
-  sound: SoundController | null;
+  sound: SoundController;
+  gameState: GameState;
+  setGameState: <T extends keyof GameState, K extends GameState[T]>(key: T, value: K) => void;
+  nextLevel: (levelNumber?: number) => void;
   isLoaded: boolean;
 };
 
-export type GameObjectCallbackParams = GameState & {
-  target: GameObject,
+export type GameObjectCallbackParams = GameEntities & {
+  target: GameObject;
 };
 
 export type GameObjectRegisterOptions = {
   id: number | string;
   spriteId: number | string;
-  spriteWidth?: number,
-  spriteHeight?: number,
+  spriteWidth?: number;
+  spriteHeight?: number;
   width: Width;
   height: Height;
   hasCollision?: boolean;

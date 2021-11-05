@@ -4,6 +4,7 @@ import { sounds } from './sounds';
 import { gameObjects } from './gameObjects';
 import { levels } from './levels';
 import { CONTROL_KEY } from './shared/constants';
+import text from './shared/text';
 
 const { body } = document;
 const app = document.querySelector('.app');
@@ -37,9 +38,9 @@ game.registerLevels(levels);
 
 game.view.registerCanvas(canvas);
 
-game.control.registerKey('ArrowLeft', CONTROL_KEY.LEFT);
-game.control.registerKey('ArrowRight', CONTROL_KEY.RIGHT);
-game.control.registerKey('Space', CONTROL_KEY.SPACE);
+game.control.registerKey('ArrowLeft', CONTROL_KEY.LEFT, text.game.control.left);
+game.control.registerKey('ArrowRight', CONTROL_KEY.RIGHT, text.game.control.right);
+game.control.registerKey('Space', CONTROL_KEY.SPACE, text.game.control.jump);
 
 // Политика браузеров запрещает воспроизводить звуки до действий пользователя
 startButton.addEventListener('click', () => {

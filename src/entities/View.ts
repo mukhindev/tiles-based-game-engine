@@ -1,7 +1,7 @@
-import { GameState } from '../types';
 import GameObject from './GameObject';
 import Player from './Player';
 import World from './World';
+
 import {
   CANVAS_BACKGROUND,
   CANVAS_HEIGHT,
@@ -10,6 +10,8 @@ import {
   GAME_CONFIG,
   SPRITE_WIDTH,
 } from '../shared/constants';
+
+import { GameEntities } from '../types';
 
 export default class View {
   public canvas?: HTMLCanvasElement;
@@ -51,9 +53,12 @@ export default class View {
     });
   }
 
-  renderPlayer(player: Player) {
+  renderPlayer(player: Player): void {
+    if (!player.sprite) {
+      return;
+    }
+
     this.ctx?.drawImage(
-      // @ts-ignore
       player.sprite.image,
       player.spriteFrame * player.spriteWidth,
       0,
@@ -93,9 +98,9 @@ export default class View {
     }
   }
 
-  update(gameState: GameState): void {
+  update({ world, player }: GameEntities): void {
     this.prepareCanvas();
-    this.renderWorld(gameState.world);
-    this.renderPlayer(gameState.player);
+    this.renderWorld(world);
+    this.renderPlayer(player);
   }
 }

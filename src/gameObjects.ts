@@ -1,7 +1,9 @@
-import { GameObjectRegisterOptions } from './types';
-import { SPRITE_ID } from './sprites';
-import { makeAnimation } from './shared/utils';
+import { GAME_SESSION_KEY } from './shared/constants';
+import makeAnimation from './shared/makeAnimation';
 import { SOUND_ID } from './sounds';
+import { SPRITE_ID } from './sprites';
+import { GameObjectRegisterOptions } from './types';
+import GameObject from './entities/GameObject';
 
 export const GAME_OBJECT_ID = {
   AIR: 0,
@@ -14,6 +16,12 @@ export const GAME_OBJECT_ID = {
   SPIKES: 7,
   PORTAL_A: 8,
   PORTAL_B: 9,
+  BAD_BRICK: 10,
+  CONCRETE: 11,
+  METAL: 12,
+  METAL_FENCE: 13,
+  WOOD_FENCE: 14,
+  METAL_BLOCK: 15,
 } as const;
 
 export const gameObjects: GameObjectRegisterOptions[] = [
@@ -41,10 +49,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ target }) => {
+    onOver: ({ target }): void => {
       target.setSpriteFrame(1);
     },
-    onOut: ({ target }) => {
+    onOut: ({ target }): void => {
       target.setSpriteFrame(0);
     },
   },
@@ -55,10 +63,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ target, player, sound }) => {
-      player.vy = -10;
+    onOver: ({ target, player, sound }): void => {
+      player.setVelocityY(-10);
       sound.play(SOUND_ID.TRAMPOLINE);
-      makeAnimation((frame) => target.setSpriteFrame(frame), [0, 1, 2, 1, 0], 1000 / 30);
+      makeAnimation((frame) => target.setSpriteFrame(frame), [0, 1, 2, 1, 0]);
     },
   },
   {
@@ -69,8 +77,8 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     width: 32,
     height: 32,
     hasCollision: true,
-    onAbove: ({ world }) => {
-      world.friction = 0.99;
+    onAbove: ({ world }): void => {
+      world.setFriction(0.99);
     },
   },
   {
@@ -80,10 +88,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ target }) => {
+    onOver: ({ target, sound, setGameState }): void => {
       target.hideAndDeactivate();
-      // this.setGameState(GAME_STATE_KEY.IS_DOOR_UNLOCKED, true);
-      // this.soundController.play(SOUND.KEY);
+      setGameState(GAME_SESSION_KEY.IS_KEY_ACQUIRED, true);
+      sound.play(SOUND_ID.KEY);
     },
   },
   {
@@ -93,18 +101,20 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    // onOver: ({ target }) => {
-    //   if (this.gameState.isKeyAcquired) {
-    //     target.setSprite([32, 96]);
-    //     target.deactivate();
-    //     this.soundController.play(SOUND.DOOR);
-    //     this.stop();
-    //
-    //     setTimeout(() => {
-    //       this.setGameState(GAME_STATE_KEY.IS_LEVEL_COMPLETED, true);
-    //     }, 2000);
-    //   }
-    // },
+    onOver: (params): void => {
+      const { target, sound, gameState, setGameState, nextLevel } = params;
+
+      if (gameState.isKeyAcquired) {
+        setGameState(GAME_SESSION_KEY.IS_DOOR_UNLOCKED, true);
+        target.setSpriteFrame(1);
+        target.deactivate();
+        sound.play(SOUND_ID.DOOR);
+
+        setTimeout(() => {
+          nextLevel();
+        }, 1000);
+      }
+    },
   },
   {
     id: GAME_OBJECT_ID.SPIKES,
@@ -113,8 +123,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ player, sound }) => {
-      // this.setGameState(GAME_STATE_KEY.PLAYER_HEALTH, this.gameState.playerHealth - 1);
+    onOver: (params): void => {
+      const { player, sound, gameState, setGameState } = params;
+
+      setGameState(GAME_SESSION_KEY.PLAYER_HEALTH, gameState.playerHealth - 1);
       player.setVelocityY(-2);
 
       if (player.vx > 0) {
@@ -133,10 +145,10 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
-    onOver: ({ player, world, sound }) => {
+    onOver: ({ player, world, sound }): void => {
       const otherPortal = world.levelObjects
         .flat()
-        .find((object) => object.id === GAME_OBJECT_ID.PORTAL_B);
+        .find((object: GameObject) => object.id === GAME_OBJECT_ID.PORTAL_B);
 
       if (otherPortal && otherPortal.x && otherPortal.y) {
         player.setX(otherPortal.x);
@@ -152,5 +164,63 @@ export const gameObjects: GameObjectRegisterOptions[] = [
     spriteHeight: 64,
     width: 32,
     height: 32,
+  },
+  {
+    id: GAME_OBJECT_ID.BAD_BRICK,
+    spriteId: SPRITE_ID.BAD_BRICK,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+    hasCollision: true,
+    onAbove: ({ target, sound }): void => {
+      sound.play(SOUND_ID.BAD_BRICK);
+      makeAnimation((frame) => target.setSpriteFrame(frame), [0, 1, 2, 3], 1000 / 10);
+      target.setCollision(false);
+      target.deactivate();
+    },
+  },
+  {
+    id: GAME_OBJECT_ID.CONCRETE,
+    spriteId: SPRITE_ID.CONCRETE,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+    hasCollision: true,
+  },
+  {
+    id: GAME_OBJECT_ID.METAL,
+    spriteId: SPRITE_ID.METAL,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+    hasCollision: true,
+  },
+  {
+    id: GAME_OBJECT_ID.METAL_FENCE,
+    spriteId: SPRITE_ID.METAL_FENCE,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+  },
+  {
+    id: GAME_OBJECT_ID.WOOD_FENCE,
+    spriteId: SPRITE_ID.WOOD_FENCE,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+  },
+  {
+    id: GAME_OBJECT_ID.METAL_BLOCK,
+    spriteId: SPRITE_ID.METAL_BLOCK,
+    spriteWidth: 64,
+    spriteHeight: 64,
+    width: 32,
+    height: 32,
+    hasCollision: true,
   },
 ];
