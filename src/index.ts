@@ -13,15 +13,18 @@ const canvas = document.createElement('canvas');
 
 body.style.margin = '0';
 body.style.backgroundColor = '#000';
-body.style.display = 'flex';
-body.style.alignItems = 'center';
-body.style.justifyContent = 'center';
-body.style.height = '100vh';
+
+app!.style.display = 'flex';
+app!.style.flexDirection = 'column';
+app!.style.alignItems = 'center';
+app!.style.justifyContent = 'center';
+app!.style.height = '100vh';
 
 startButton.textContent = 'Старт!';
+startButton.style.fontSize = '2rem';
 
-canvas.style.width = '95vw';
-canvas.style.maxHeight = '95vh';
+canvas.style.width = '0';
+canvas.style.maxHeight = '0';
 canvas.style.objectFit = 'contain';
 canvas.style.border = 'none';
 
@@ -44,7 +47,12 @@ game.control.registerKey('Space', CONTROL_KEY.SPACE, text.game.control.jump);
 
 // Политика браузеров запрещает воспроизводить звуки до действий пользователя
 startButton.addEventListener('click', () => {
-  game.init(() => console.log('Игра загружена'));
+  game.init(() => {
+    console.log('Игра загружена');
+    canvas.style.width = '95vw';
+    canvas.style.maxHeight = '95vh';
+    startButton.remove();
+  });
 });
 
 app.append(canvas);
